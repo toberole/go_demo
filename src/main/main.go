@@ -29,7 +29,7 @@ func post_param(w http.ResponseWriter, r *http.Request) {
 	name := r.PostFormValue("name")
 	pwd := r.PostFormValue("pwd")
 
-	fmt.Printf("name: %s, pwd: %s",name,pwd)
+	fmt.Printf("name: %s, pwd: %s", name, pwd)
 
 	w.Write([]byte(" hello post_param"))
 }
