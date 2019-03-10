@@ -3,8 +3,29 @@ Go语言中，main函数结束，整个进程也随之结束。
 
 Go语言中，所有的变量的传递都是值传递
 
+- 导包
+import{
+
+}
+
 从标准库中导入代码时，编译器在查找包的时候，总是回到GOROOT和GOPATH环境变量引用的位置去查找
-import _ "package name" 会导致该包的init方法执行
+比如：
+   举个例子导入 net/http 包。如果 Go 安装在/usr/local/go，并且环境变量 GOPATH 设置为
+   /home/myproject:/home/mylibraries，编译器就会按照下面的顺序查找 net/http 包：
+   /usr/local/go/src/pkg/net/http 标准库所在位置
+   /home/myproject/src/net/http
+   /home/mylibraries/src/net/http
+导入远程代码：
+    github.com/spf13/viper
+    用导入路径编译程序时， go build 命令会使用 GOPATH 的设置，在磁盘上搜索这个包。事实上，
+    这个导入路径代表一个 URL，指向 GitHub 上的代码库。如果路径包含 URL，可以使用 Go 工具链从
+    DVCS 获取包，并把包的源代码保存在 GOPATH 指向的路径里与 URL 匹配的目录里。这个获取过程
+    使用 go get 命令完成。 go get 将获取任意指定的 URL 的包，或者一个已经导入的包所依赖的其
+    他包。由于 go get 的这种递归特性，这个命令会扫描某个包的源码树，获取能找到的所有依赖包
+
+
+import _ "package name" 会导致该包的init方法执行,init方法会在main方法之前执行
+
 在Go语言中，所有的变量都被初始化为其对应的零值
 
 ":=" 表示创建变量并且赋值[省去了var 类型由编译器推断]
@@ -14,6 +35,9 @@ sync包中的WaitGroup可以跟踪启动的gorotine，WaitGroup是一个计数�
 res,_ := test(),忽略test函数返回的第二个值
 
 闭包访问外部函数里面的变量的时，是直接访问变量本身，并不是变量的副本
+
+- 数组、切片、映射
+函数间传递切片和映射类似于传递指针
 
 
 

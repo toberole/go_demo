@@ -1,7 +1,7 @@
 package main
 
 import (
-	"domain"
+	xxxx "domain" // 导入domain包 取别名为xxxx
 	"fmt"
 	"log"
 	"os"
@@ -26,7 +26,32 @@ func init() {
 func main() {
 	fmt.Println("hello world")
 
-	res, name := domain.Add("xiaohong")
+	res, name := xxxx.Add("xiaohong")
+
+	// xxxx.Test1()
+	// xxxx.Test2()
+	xxxx.Test3()
+
+	//cert := Cer{
+	//	t: "test",
+	//	d: "xxx",
+	//}
+	//cert := Cer{
+	//	"test",
+	//	"xxx",
+	//}
+	//fmt.Println(cert.t)
+	//fmt.Println(cert.d)
+
+	user := xxxx.User{"xiaoming", 11}
+	user.SysHellouser()
+
+	user1 := &xxxx.User{"xiaohong", 22}
+	user1.SysHellouser1()
+
+	user2 := &xxxx.User{"xiaohong----", 33}
+	user2.SysHellouser2()
+	fmt.Println(user2.Name)
 
 	fmt.Println(res)
 	fmt.Println(name)
