@@ -22,10 +22,22 @@ type User struct {
 	Age  int
 }
 
+type Interface_xxxx interface {
+	Sys_xxx()
+}
+
 // 给结构体添加方法 类的畸形实现
 func (u User) SysHellouser() {
 	fmt.Println(u.Name)
 	fmt.Println(u.Age)
+}
+
+// 实现Interface_xxxx接口
+func (u User) Sys_xxx() {
+	fmt.Println("Sys_xxx before")
+	fmt.Println(u.Name)
+	fmt.Println(u.Age)
+	fmt.Println("Sys_xxx after")
 }
 
 func (u *User) SysHellouser1() {

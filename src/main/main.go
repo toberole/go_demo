@@ -1,58 +1,39 @@
 package main
 
 import (
-	xxxx "domain" // 导入domain包 取别名为xxxx
 	"fmt"
-	"log"
-	"os"
+	"sync"
+	"time"
 )
 
-// 声明结构体
-type Cer struct {
-	t string
-	d string
+// 无缓冲通道 读写都是阻塞的
+var ch = make(chan int)
+var wg1 sync.WaitGroup
+
+func r_ch(ch chan int) {
+	defer wg1.Done()
+
+	value := <-ch
+
+	fmt.Printf("read value: %d\n", value)
 }
 
-// 声明接口
-type Cert_interface interface {
-	SysHello(age int, name string) (int, string)
+func w_ch(ch chan int) {
+	defer wg1.Done()
+
+	time.Sleep(2 * time.Second)
+
+	ch <- 100
+	fmt.Printf("write value \n")
 }
 
-func init() {
-	log.SetOutput(os.Stdout)
-
-	fmt.Println("hello init")
-}
 func main() {
-	fmt.Println("hello world")
 
-	res, name := xxxx.Add("xiaohong")
+	wg1.Add(2)
 
-	// xxxx.Test1()
-	// xxxx.Test2()
-	xxxx.Test3()
+	go r_ch(ch)
+	go w_ch(ch)
 
-	//cert := Cer{
-	//	t: "test",
-	//	d: "xxx",
-	//}
-	//cert := Cer{
-	//	"test",
-	//	"xxx",
-	//}
-	//fmt.Println(cert.t)
-	//fmt.Println(cert.d)
-
-	user := xxxx.User{"xiaoming", 11}
-	user.SysHellouser()
-
-	user1 := &xxxx.User{"xiaohong", 22}
-	user1.SysHellouser1()
-
-	user2 := &xxxx.User{"xiaohong----", 33}
-	user2.SysHellouser2()
-	fmt.Println(user2.Name)
-
-	fmt.Println(res)
-	fmt.Println(name)
+	wg1.Wait()
+	fmt.Println("all task has done")
 }
