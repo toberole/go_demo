@@ -30,6 +30,9 @@ func hello1(w http.ResponseWriter, r *http.Request) {
 	go test_hello2(ch)
 	var v = <-ch
 	io.WriteString(w, v)
+
+	cur_time := time.Now()
+	io.WriteString(w, "&nbsp&nbsp"+cur_time.String())
 }
 
 // 获取get 参数
