@@ -2,38 +2,68 @@ package main
 
 import (
 	"fmt"
-	"sync"
+	"io"
+	"net/http"
 	"time"
 )
 
-// 无缓冲通道 读写都是阻塞的
-var ch = make(chan int)
-var wg1 sync.WaitGroup
-
-func r_ch(ch chan int) {
-	defer wg1.Done()
-
-	value := <-ch
-
-	fmt.Printf("read value: %d\n", value)
+func test_hello1(w http.ResponseWriter) {
+	fmt.Println("test_hello1")
+	io.WriteString(w, "test_hello1 ")
 }
 
-func w_ch(ch chan int) {
-	defer wg1.Done()
+func test_hello2(ch chan string) {
+	fmt.Println("test_hello2")
+	time.Sleep(time.Duration(2) * time.Second)
+	ch <- "test_hello2 Sleep 2 Second"
+}
 
-	time.Sleep(2 * time.Second)
+// 按照规定的签名定义 作为http的处理函数
+func hello1(w http.ResponseWriter, r *http.Request) {
+	io.WriteString(w, "Hello world! ")
+	test_hello1(w)
 
-	ch <- 100
-	fmt.Printf("write value \n")
+	// 注意启动的线程必须在服务回调的方法之前结束
+	// 否则 http请求结束了 线程再返回结果就无意义
+	// 利用chan阻塞特性
+	var ch = make(chan string)
+	go test_hello2(ch)
+	var v = <-ch
+	io.WriteString(w, v)
+}
+
+// 获取get 参数
+func get_param1(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("===========get_param==========")
+
+	query := r.URL.Query()
+	name := query["name"][0]
+	fmt.Println(name)
+
+	w.Write([]byte("hello get"))
+}
+
+// 获取post方法的不带文件的参数
+func post_param1(w http.ResponseWriter, r *http.Request) {
+	name := r.PostFormValue("name")
+	pwd := r.PostFormValue("pwd")
+
+	fmt.Printf("name: %s, pwd: %s", name, pwd)
+
+	w.Write([]byte(" hello post_param"))
 }
 
 func main() {
+	fmt.Println("hello 你好世界")
 
-	wg1.Add(2)
+	// 路由 可以使用DefaultServeMux 默认的
+	mux := http.NewServeMux()
 
-	go r_ch(ch)
-	go w_ch(ch)
+	// 注册一个处理函数
+	mux.HandleFunc("/hello", hello1)
+	mux.HandleFunc("/get_param", get_param1)
+	mux.HandleFunc("/post_param", post_param1)
 
-	wg1.Wait()
-	fmt.Println("all task has done")
+	// 启动服务 监听8000端口
+	http.ListenAndServe(":8000", mux)
 }
