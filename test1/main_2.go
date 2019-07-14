@@ -1,4 +1,4 @@
-package main
+package test1
 
 import (
 	xxxx "domain" // 导入domain包 取别名为xxxx

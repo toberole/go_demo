@@ -1,4 +1,4 @@
-package main
+package test1
 
 import (
 	"fmt"
@@ -66,7 +66,7 @@ func main() {
 // Go 语言的goroutine是由其内部的任务调度器调度运行的
 // 有别于操作系统调度任务
 /*
-func main() {
+func test1() {
 	// 打印cpu的核数
 	fmt.Println(runtime.NumCPU())
 
